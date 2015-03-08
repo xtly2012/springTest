@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.chen.dao.TransactionDAO">
+	<typeAlias alias="TransactionTest" type="com.chen.domain.TransactionTest"/>
+	
+	
+
+	<insert id="saveTransaction" parameterClass="TransactionTest">
+		insert into TRANSACTION_TEST
+		<dynamic prepend="(" close=")">
+			<isNotEmpty prepend="," property="iden">
+				IDEN
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="text">
+				TEXT
+			</isNotEmpty>
+		</dynamic>
+		values
+		<dynamic prepend="(" close=")">
+			<isNotEmpty prepend="," property="iden">
+				#iden#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="text">
+				#text#
+			</isNotEmpty>
+		</dynamic>
+	</insert>
+
+</sqlMap>
