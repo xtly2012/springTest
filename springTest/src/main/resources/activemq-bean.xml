@@ -10,29 +10,10 @@
         <property name="start" value="true"></property>
     </bean>
 
-    <!-- ActiveMQ VM连接工厂 -->
-    <bean id="vmConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
-          depends-on="broker">
-        <property name="brokerURL" value="${activemq.broker.url}"/>
-        <!--
-                    jms.broker_url -->
-        <!-- 对PERSISTENT的消息进行异步发送(NON_PERSISTENT消息默认异步发送) -->
-        <property name="useAsyncSend" value="true"/>
-        <property name="messagePrioritySupported" value="false"></property>
-    </bean>
-
-    <!-- Spring Caching 连接工厂 为客户端提供缓存功能 -->
-    <bean id="vmCachingConnectionFactory"
-          class="org.springframework.jms.connection.CachingConnectionFactory">
-        <property name="targetConnectionFactory" ref="vmConnectionFactory"/>
-        <property name="sessionCacheSize" value="${activemq.producer.sessionCacheSize}"/>
-    </bean>
-
     <!-- ActiveMQ TCP连接工厂 -->
     <bean id="tcpConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="${activemq.tradecenter.broker.url}"/>
-        <!--
-                    jms.broker_url -->
+        <property name="brokerURL" value="${activemq.broker.url}"/>
+        <!--jms.broker_url -->
         <!-- 对PERSISTENT的消息进行异步发送(NON_PERSISTENT消息默认异步发送) -->
         <property name="useAsyncSend" value="true"/>
         <property name="messagePrioritySupported" value="false"></property>
@@ -44,4 +25,29 @@
         <property name="targetConnectionFactory" ref="tcpConnectionFactory"/>
         <property name="sessionCacheSize" value="${activemq.producer.sessionCacheSize}"/>
     </bean>
+    
+     <!-- 配置生产者JMS模版 -->
+    <bean id="publicPaymentJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="tcpCachingConnectionFactory"/>
+        <!-- 使 deliveryMode, priority, timeToLive设置生效 -->
+        <property name="explicitQosEnabled" value="true"/>
+        <!-- 设置NON_PERSISTENT模式, 默认为PERSISTENT -->
+        <property name="deliveryPersistent" value="false"/>
+        <!-- 设置优先级, 默认为4 -->
+        <property name="priority" value="5"/>
+        <!--${advanced-priority} -->
+        <property name="timeToLive" value="${activemq.producer.timeToLive}"/>
+        <!---->
+    </bean>
+    
+    <!-- 订单中心通知队列 -->
+    <bean id="activemqNotifyQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <property name="physicalName" value="activemqNotifyQueue"></property>
+    </bean>
+    
+    <bean id="activemqNotifySender" class="com.chen.activemq.ActivemqSender" autowire="byType">
+        <property name="jmsTemplate" ref="publicPaymentJmsTemplate"/>
+        <property name="destination" ref="activemqNotifyQueue"/>
+    </bean>
+    
 </beans>

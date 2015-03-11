@@ -20,6 +20,7 @@
         <property name="locations">
             <list>
                 <value>classpath:/META-INF/conf/jdbc.properties</value>
+                <value>classpath:/META-INF/conf/activemq.properties</value>
             </list>
         </property>
     </bean>
