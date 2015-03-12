@@ -121,6 +121,7 @@
     </aop:config>
     
     <import resource="applicationContext-bean.xml"/>
-    <import resource="activemq-bean.xml"/>
+    <import resource="activemq-bean-jvm.xml"/>
+    <!-- import resource="activemq-persistent.xml"/-->
     <context:mbean-export default-domain="com.chen" registration="replaceExisting"/>
 </beans>

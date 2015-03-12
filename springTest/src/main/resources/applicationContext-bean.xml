@@ -12,7 +12,10 @@
 	       http://www.springframework.org/schema/tx
 	       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 
-    <bean id="TransactionTestDAO" class="com.chen.dao.impl.TransactionTestDAOImpl" autowire="byType"/>
+    <bean id="TransactionTestDAO" class="com.chen.dao.impl.TransactionTestDAOImpl">
+    	<property name="dataSource" ref="dataSource"/>
+    	<property name="sqlMapClient" ref="sqlMapClient"/>
+    </bean>
     
     <bean id="TransactionTestService" class="com.chen.service.impl.TransactionTestServiceImpl" autowire="byType"/>
     

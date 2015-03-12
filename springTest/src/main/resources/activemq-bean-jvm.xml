@@ -4,9 +4,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+    <!-- jvm broker 配置 -->
+    <bean id="broker" class="org.apache.activemq.xbean.BrokerFactoryBean">
+        <property name="config" value="${activemq.broker.config}"/>
+        <property name="start" value="true"></property>
+    </bean>
     
-    <!-- ActiveMQ TCP连接工厂 -->
-    <bean id="tcpConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <!-- ActiveMQ VM连接工厂 -->
+    <bean id="vmConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"
+          depends-on="broker">
         <property name="brokerURL" value="${activemq.broker.url}"/>
         <!--jms.broker_url -->
         <!-- 对PERSISTENT的消息进行异步发送(NON_PERSISTENT消息默认异步发送) -->
@@ -14,16 +20,16 @@
         <property name="messagePrioritySupported" value="false"></property>
     </bean>
 
-    <!-- Spring Caching tcp连接工厂 为客户端提供缓存功能 -->
-    <bean id="tcpCachingConnectionFactory"
+    <!-- Spring Caching 连接工厂 为客户端提供缓存功能 -->
+    <bean id="vmCachingConnectionFactory"
           class="org.springframework.jms.connection.CachingConnectionFactory">
-        <property name="targetConnectionFactory" ref="tcpConnectionFactory"/>
+        <property name="targetConnectionFactory" ref="vmConnectionFactory"/>
         <property name="sessionCacheSize" value="${activemq.producer.sessionCacheSize}"/>
     </bean>
     
-     <!-- 配置生产者JMS模版 -->
-    <bean id="publicPaymentJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <property name="connectionFactory" ref="tcpCachingConnectionFactory"/>
+    <!-- 配置生产者JMS模版 -->
+    <bean id="JvmJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="vmCachingConnectionFactory"/>
         <!-- 使 deliveryMode, priority, timeToLive设置生效 -->
         <property name="explicitQosEnabled" value="true"/>
         <!-- 设置NON_PERSISTENT模式, 默认为PERSISTENT -->
@@ -35,12 +41,13 @@
         <!---->
     </bean>
     
-    <bean id="activemqNotifyQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <property name="physicalName" value="activemqNotifyQueue"></property>
+    <bean id="jvmActivemqNotifyQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <property name="physicalName" value="jvmActivemqNotifyQueue"></property>
     </bean>
     
-    <bean id="activemqNotifySender" class="com.chen.activemq.ActivemqSender" autowire="byType">
-        <property name="jmsTemplate" ref="publicPaymentJmsTemplate"/>
-        <property name="destination" ref="activemqNotifyQueue"/>
+    <bean id="jvmActivemqNotifySender" class="com.chen.activemq.JvmActivemqSender" autowire="byType">
+        <property name="jmsTemplate" ref="JvmJmsTemplate"/>
+        <property name="destination" ref="jvmActivemqNotifyQueue"/>
     </bean>
+    
 </beans>

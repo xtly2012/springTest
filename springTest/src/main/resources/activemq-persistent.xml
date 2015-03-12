@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<broker xmlns="http://activemq.apache.org/schema/core"
+		persistent="true" useShutdownHook="false" brokerName="amq-broker"
+		useJmx="true">
+
+		<persistenceAdapter>
+			<jdbcPersistenceAdapter dataSource="#mysql-ds" />
+		</persistenceAdapter>
+
+		<transportConnectors>
+			<transportConnector uri="tcp://localhost:61616" />
+		</transportConnectors>
+
+	</broker>
+
+	<bean id="mysql-ds" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/activemq?relaxAutoCommit=true"></property>
+		<property name="username" value="activemq" />
+		<property name="password" value="activemq" />
+		<property name="maxActive" value="200" />
+		<property name="poolPreparedStatements" value="true" />
+	</bean>
+</beans>
