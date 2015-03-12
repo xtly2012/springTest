@@ -22,7 +22,7 @@ public class ActivemqTest {
             e.printStackTrace();
         }
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-        System.out.println("===================");
+        System.out.println("===================   ");
 	}
 	
 	public static void main(String[] argus) {		
