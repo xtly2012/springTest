@@ -9,5 +9,5 @@
               maxSessions="128" maxTransactions="32" useStatementNamespaces="true"/>
 
     <!-- 账户域 -->
-    <sqlMap resource="com/chen/dao/sql/TransactionMapper.xml"/>
+    <sqlMap resource="META-INF/ibatis/mapper/TransactionMapper.xml"/>
 </sqlMapConfig>
