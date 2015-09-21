@@ -8,6 +8,6 @@ grant all privileges on springtestDB.* to springtest@'localhost';
 use springtestDB;
 
 create table TRANSACTION_TEST(
-	ident INT comment '标识',
+	iden INT comment '标识',
 	text  VARCHAR(128) comment '文本'
 );
